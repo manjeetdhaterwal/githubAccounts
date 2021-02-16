@@ -1,0 +1,65 @@
+<html>
+<body>
+    <button id="prev">Prev</button>
+    <button id="next">Next</button>
+
+    <ul id="parent">
+
+    </ul>
+
+</body>
+
+<script>
+
+    var parent = document.getElementById("parent");
+    
+    var prev = document.getElementById("prev");
+    var next = document.getElementById("next");
+
+    var current_page = 0;
+
+
+    prev.addEventListener("click", function()
+    {
+        if( current_page > 0 )
+        {
+            current_page--;
+            fetchData();
+
+        }
+    })
+
+    next.addEventListener("click", function()
+    {
+        current_page++;
+
+        fetchData();
+
+    })
+
+
+    function fetchData()
+    {
+        parent.innerHTML = "";
+
+        var request = new XMLHttpRequest();
+
+        request.open("GET", "https://api.github.com/users?since="+current_page*30);
+
+        request.send();
+
+        request.addEventListener("load", function(event)
+        {
+            var data = JSON.parse(request.responseText);
+
+            data.forEach(function(user)
+            {
+                var li = document.createElement("li");
+                li.innerHTML = user.login;
+                parent.appendChild(li);
+
+            })
+        });
+    }
+</script>
+</html>
